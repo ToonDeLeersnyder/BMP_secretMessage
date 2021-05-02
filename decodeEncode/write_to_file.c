@@ -5,7 +5,7 @@
 // om te compilen:
 // gcc -Wall -pedantic write_to_file.c -o write_to_file
 //write_to_file -c -s secretMessage.txt -i meme.bmp -o memeOut.bmp
-
+int getSingleBit(char byte,int positie);
 int main(int argc,char *argv[]){
 
     char *bmpFileName;
@@ -64,55 +64,77 @@ int main(int argc,char *argv[]){
     unsigned char* bmp_pixels_input = (unsigned char *) calloc(bmp_image_size, sizeof(unsigned char));
 
     fread(bmp_pixels_input, sizeof(unsigned char), bmp_image_size, bmp_picture_file); // Lees alle pixels (de rest van de file
-    fclose(bmp_picture_file);
+	fseek(bmp_picture_file,54,SEEK_SET);
 
-    int output[8];
-    char c = 'a';
-    for (int i = 0; i < 8; ++i) {
-    output[i] = (c >> i) & 1;
-    }
+	
+	int count = 0;
+	//FILE* imgFile = fopen(argv[5], "w");
+	FILE* textFile = fopen(argv[3],"r");
+	FILE* test;
+    test = fopen("bmpout.bmp", "wb");
+	for(int i = 0; i<54;i++){
+		fputc(bmp_file_header[i],test);
+	}
+	int b =0;
+	
+	while(!feof(bmp_picture_file)){// doet de while zolang dat er pixels zijn.
+		
+		char textChar = fgetc(textFile);//neemt 1 character van de textfile.
 
-    for(int i = 0; i <8; i++){
-        printf("%d", output[i]);
-    }
+		
+		for(int i = 0; i <8; i++){
+			int bit = getSingleBit(textChar,i);// neemt 1 bit van de text character.
+			
+			int imgChar = fgetc(bmp_picture_file);//neemt 1 character en schuift op.
+			
+			
+			int LSB = imgChar & 1;// mask
+			
+				 
+			if(LSB == bit){
+				
+				fputc(imgChar,test);
+				if(b==1){
+					printf("yes0");
+				}
+				
+			}
+			else{
+				
+				if(LSB == 0){
+					imgChar++;
+					if(b==1){
+					printf("yes1");
+					}
+				}
+				else{			
+					imgChar--;
+					if(b==1){
+					printf("yes2");
+				}
+				}
+					
+				fputc(imgChar,test);
+				++count;
+			}
+			
+			//printf("%c",imgChar);
 
-    printf("\n");
 
-    int outputR[8];
-
-    for (int i = 0; i < 8; ++i) {
-    outputR[i] = (bmp_pixels_input[0] >> i) & 1;
-    }
-
-    for(int i = 0; i <8; i++){
-        printf("%d", outputR[i]);
-    }
-	printf("\n%d\n",bmp_pixels_input[0]);
+			
+		}
+		b++;
+		//clsprintf("\n%d",b);
+	
+	}
 	
 	
-	
-	int outputG[8];
-
-    for (int i = 0; i < 8; ++i) {
-    outputG[i] = (bmp_pixels_input[1] >> i) & 1;
-    }
-
-    for(int i = 0; i <8; i++){
-        printf("%d", outputG[i]);
-    }
-	printf("\n%d\n",bmp_pixels_input[1]);
+	fclose(bmp_picture_file);
+	fclose(textFile);
+}
+int getSingleBit(char byte,int positie)
+{
+	return((byte>>(8-positie))&1);
 	
 	
-	
-	int outputB[8];
-
-    for (int i = 0; i < 8; ++i) {
-    outputB[i] = (bmp_pixels_input[2] >> i) & 1;
-    }
-
-    for(int i = 0; i <8; i++){
-        printf("%d", outputB[i]);
-    }
-	printf("\n%d\n",bmp_pixels_input[2]);
-
 }
