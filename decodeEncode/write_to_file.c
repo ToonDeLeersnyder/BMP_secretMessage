@@ -14,6 +14,7 @@ int main(int argc,char *argv[]){
     FILE* txt_file;
     int bmp_breedte;
     int bmp_hoogte;
+	int state = 1;
     unsigned char bmp_file_header[54];
 
     char str[1000];
@@ -51,7 +52,13 @@ int main(int argc,char *argv[]){
             }
        }
     }
-
+	
+	// if( argv[1] = "-c")	{		
+		// state = 1;
+	// }
+	// else if (argv[1] = "-d"){
+		// state = 0;
+	// }
     
     fread(bmp_file_header, sizeof(unsigned char), 54, bmp_picture_file);
     bmp_breedte = bmp_file_header[18];
@@ -77,47 +84,48 @@ int main(int argc,char *argv[]){
 	}
 	int b =0;
 	
-	while(!feof(bmp_picture_file)){// doet de while zolang dat er pixels zijn.
+	if(state){//ENCODE
+		while(!feof(bmp_picture_file)){// doet de while zolang dat er pixels zijn.
 		
-		char textChar = fgetc(textFile);//neemt 1 character van de textfile.
+			char textChar = fgetc(textFile);//neemt 1 character van de textfile.
 
-		
-		for(int i = 0; i <8; i++){
-			int bit = getSingleBit(textChar,i);// neemt 1 bit van de text character.
 			
-			int imgChar = fgetc(bmp_picture_file);//neemt 1 character en schuift op.
-			
-			
-			int LSB = imgChar & 1;// mask
-			
-				 
-			if(LSB == bit){
+			for(int i = 0; i <8; i++){
+				int bit = getSingleBit(textChar,i);// neemt 1 bit van de text character.
 				
-				fputc(imgChar,test);
-				if(b==1){
-					printf("yes0");
-				}
+				int imgChar = fgetc(bmp_picture_file);//neemt 1 character en schuift op.
 				
-			}
-			else{
 				
-				if(LSB == 0){
-					imgChar++;
-					if(b==1){
-					printf("yes1");
-					}
-				}
-				else{			
-					imgChar--;
-					if(b==1){
-					printf("yes2");
-				}
-				}
+				int LSB = imgChar & 1;// mask
+				
+					 
+				if(LSB == bit){
 					
-				fputc(imgChar,test);
-				++count;
+					fputc(imgChar,test);
+					if(b==1){
+						printf("yes0");
+					}
+					
+				}
+				else{
+					
+					if(LSB == 0){
+						imgChar++;
+						if(b==1){
+						printf("yes1");
+						}
+					}
+					else{			
+						imgChar--;
+						if(b==1){
+						printf("yes2");
+						}
+					}
+						
+					fputc(imgChar,test);
+					++count;
+				}
 			}
-			
 			//printf("%c",imgChar);
 
 
@@ -125,13 +133,31 @@ int main(int argc,char *argv[]){
 		}
 		b++;
 		//clsprintf("\n%d",b);
+	fclose(bmp_picture_file);
+	fclose(textFile);
+	}
 	
+	else{//DECRODE
+		
+		
+		printf("yeet");
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	}
 	
 	
-	fclose(bmp_picture_file);
-	fclose(textFile);
+	
 }
+	
 int getSingleBit(char byte,int positie)
 {
 	return((byte>>(8-positie))&1);
