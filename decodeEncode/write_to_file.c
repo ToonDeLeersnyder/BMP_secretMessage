@@ -78,7 +78,7 @@ int main(int argc,char *argv[]){
 	//FILE* imgFile = fopen(argv[5], "w");
 	FILE* textFile = fopen(argv[3],"r");
 	FILE* test;
-    test = fopen("bmpout.bmp", "wb");
+    test = fopen(argv[7], "wb");
 	for(int i = 0; i<54;i++){
 		fputc(bmp_file_header[i],test);
 	}
