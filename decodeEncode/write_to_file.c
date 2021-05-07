@@ -53,12 +53,12 @@ int main(int argc,char *argv[]){
        }
     }
 	
-	// if( argv[1] = "-c")	{		
-		// state = 1;
-	// }
-	// else if (argv[1] = "-d"){
-		// state = 0;
-	// }
+	if( !strcmp(argv[1], "-c")){		
+		state = 1;
+	}
+	else if (!strcmp(argv[1], "-d")){
+		state = 0;
+	}
     
     fread(bmp_file_header, sizeof(unsigned char), 54, bmp_picture_file);
     bmp_breedte = bmp_file_header[18];
@@ -75,7 +75,6 @@ int main(int argc,char *argv[]){
 
 	
 	int count = 0;
-	//FILE* imgFile = fopen(argv[5], "w");
 	FILE* textFile = fopen(argv[3],"r");
 	FILE* test;
     test = fopen(argv[7], "wb");
@@ -102,24 +101,24 @@ int main(int argc,char *argv[]){
 				if(LSB == bit){
 					
 					fputc(imgChar,test);
-					if(b==1){
-						printf("yes0");
-					}
+					// if(b==1){
+						// printf("yes0");
+					// }
 					
 				}
 				else{
 					
 					if(LSB == 0){
 						imgChar++;
-						if(b==1){
-						printf("yes1");
-						}
+						// if(b==1){
+						// printf("yes1");
+						// }
 					}
 					else{			
 						imgChar--;
-						if(b==1){
-						printf("yes2");
-						}
+						// if(b==1){
+						// printf("yes2");
+						// }
 					}
 						
 					fputc(imgChar,test);
@@ -137,7 +136,7 @@ int main(int argc,char *argv[]){
 	fclose(textFile);
 	}
 	
-	else{//DECRODE
+	else if(!state){//DECRODE
 		
 		
 		printf("yeet");
